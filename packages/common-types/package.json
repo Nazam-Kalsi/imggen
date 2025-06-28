@@ -1,0 +1,21 @@
+{
+  "name": "commontypes",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "exports":{
+    "./types":"./types.ts"
+  },
+  "scripts": {
+    "dev": "bun --watch --turbopack index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "zod": "^3.25.67"
+  }
+}
