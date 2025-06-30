@@ -13,3 +13,96 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       String @unique @default(uuid())
+  userName String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  prompts    UserPrompts[]
+  models     Models[]
+}
+
+model UserPrompts {
+  id     String @unique @default(uuid())
+  prompt String
+  userId   String
+  user User @relation(fields:[userId], references:[id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Pack {
+  id       String        @unique @default(uuid())
+  packName String
+  prompts  PackPrompts[]
+}
+
+model PackPrompts {
+  id     String @unique @default(uuid())
+  prompt String
+  packId String
+  pack   Pack   @relation(fields: [packId], references: [id])
+}
+
+model Models {
+  id             String           @unique @default(uuid())
+  name           String
+  type           type
+  ethinicity     ethinicity
+  eyeColor       eyeColor
+  bald           Boolean
+  // images String[] // we gonna have new table which contain training images
+  trainingImages TrainingImages[]
+  outputImages   OutputImages[]
+  userId String
+  user User @relation(fields:[userId], references:[id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model TrainingImages {`
+  id        String   @unique @default(uuid())
+  imagesUrl String[]
+  modelId   String
+  model     Models   @relation(fields: [modelId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model OutputImages {
+  id      String @unique @default(uuid())
+  image   String
+  modelId String
+  userId  String
+  model   Models @relation(fields: [modelId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum eyeColor {
+  blue
+  green
+  brown
+  black
+  gray
+  hazel
+  amber
+  pink
+  red
+  yellow
+  turquoise
+  violet
+}
+
+enum ethinicity {
+  white
+  nigga
+  chinese
+}
+
+enum type {
+  man
+  woman
+  other
+}

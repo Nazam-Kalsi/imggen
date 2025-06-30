@@ -15,6 +15,7 @@
   "type": "module",
   "dependencies": {
     "express": "^5.1.0",
-    "commontypes":"*"
+    "commontypes":"*",
+    "db":"*"
   }
 }
