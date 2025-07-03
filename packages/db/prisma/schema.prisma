@@ -72,7 +72,8 @@ model TrainingImages {`
 
 model OutputImages {
   id      String @unique @default(uuid())
-  image   String
+  imageUrl   String @default("https://picsum.photos/200")
+  prompt String
   modelId String
   userId  String
   model   Models @relation(fields: [modelId], references: [id])

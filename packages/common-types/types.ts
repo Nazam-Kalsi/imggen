@@ -18,9 +18,11 @@ export const trainModel = z.object({
 
 export const imageGeneration = z.object({
     prompt:z.string().min(3,{message:"Prompt is required."}),
-    modelId:z.string()
+    modelId:z.string(),
+    
+
 })
 export const imageGenerationFromPack = z.object({
     modelId:z.string(),
-    pack:z.string(),
+    packId:z.string(),
 })
