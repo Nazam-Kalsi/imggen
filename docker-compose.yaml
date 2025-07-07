@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres
-
+    container_name: postgress
     env_file:
       - .env
     ports:
@@ -11,9 +11,9 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-
     ports:
       - 8080:80
+    container_name: pgAdmin
     env_file:
       - .env
     volumes:
@@ -21,6 +21,15 @@ services:
     depends_on:
       - postgres
 
+  reddis:
+    image: redis
+    ports:
+      - 6379:6379
+    container_name: redis
+    volumes:
+      - redis-data:/data
+
 volumes:
   postgres_data:
   pgadmin-data:
+  redis-data:

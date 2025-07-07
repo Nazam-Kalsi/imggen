@@ -14,8 +14,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "commontypes": "*",
+    "db": "*",
     "express": "^5.1.0",
-    "commontypes":"*",
-    "db":"*"
+    "redis":"*"
   }
 }

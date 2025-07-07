@@ -1,8 +1,8 @@
 export class ApiErr extends Error {
     statusCode:number;
-    override message:string;
+    message:string;
     errors:string[];
-    override stack:any;
+    stack:any;
     constructor(statusCode:number,message='invalid',errors=[],stack=''){
         super(message);
         this.statusCode = statusCode;

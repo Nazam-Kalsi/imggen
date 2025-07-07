@@ -1,13 +1,18 @@
 import { ApiErr } from "../utils/apiErr";
-import { ApiRes, type ApiResResponseT } from "../utils/ApiRes";
+import { ApiRes } from "../utils/ApiRes";
 
-export const errorHandlerMiddleware = (res:any, err:any) => {
+export const errorHandlerMiddleware = (err:any, req:any, res:any, next:any) => {
   if (err instanceof ApiErr) 
-    return res
-      .status(err.statusCode)
-      .json(ApiRes({ statusCode: err.statusCode, message: err.message }));
+   {
+    return res.status(err.statusCode).json({
+        message: err.message,
+        error: err.errors,
+      });
+    }
+    
+    console.log("also here")
   
-  return res.status(500).json({
+   return res.status(500).json({
     message: "Something went wrong!",
     error: err.message || err,
   });

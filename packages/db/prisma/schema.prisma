@@ -15,21 +15,21 @@ datasource db {
 }
 
 model User {
-  id       String @unique @default(uuid())
-  userName String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  prompts    UserPrompts[]
-  models     Models[]
+  id        String        @unique @default(uuid())
+  userName  String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  prompts   UserPrompts[]
+  models    Models[]
 }
 
 model UserPrompts {
-  id     String @unique @default(uuid())
-  prompt String
-  userId   String
-  user User @relation(fields:[userId], references:[id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @unique @default(uuid())
+  prompt    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Pack {
@@ -52,33 +52,35 @@ model Models {
   ethinicity     ethinicity
   eyeColor       eyeColor
   bald           Boolean
-  // images String[] // we gonna have new table which contain training images
+  status         status           @default(pending)
+  zipUrl         String
+  // images      String[]        // we gonna have new table which contain training images
   trainingImages TrainingImages[]
   outputImages   OutputImages[]
-  userId String
-  user User @relation(fields:[userId], references:[id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
-model TrainingImages {`
+model TrainingImages {
   id        String   @unique @default(uuid())
   imagesUrl String[]
   modelId   String
   model     Models   @relation(fields: [modelId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OutputImages {
-  id      String @unique @default(uuid())
-  imageUrl   String @default("https://picsum.photos/200")
-  prompt String
-  modelId String
-  userId  String
-  model   Models @relation(fields: [modelId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @unique @default(uuid())
+  imageUrl  String   @default("https://picsum.photos/200")
+  prompt    String
+  modelId   String
+  userId    String
+  model     Models   @relation(fields: [modelId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum eyeColor {
@@ -106,4 +108,10 @@ enum type {
   man
   woman
   other
+}
+
+enum status {
+  pending
+  success
+  failed
 }
