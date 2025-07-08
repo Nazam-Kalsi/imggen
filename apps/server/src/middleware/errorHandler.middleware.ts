@@ -9,9 +9,7 @@ export const errorHandlerMiddleware = (err:any, req:any, res:any, next:any) => {
         error: err.errors,
       });
     }
-    
-    console.log("also here")
-  
+      
    return res.status(500).json({
     message: "Something went wrong!",
     error: err.message || err,

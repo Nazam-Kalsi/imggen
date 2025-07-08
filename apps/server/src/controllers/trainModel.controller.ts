@@ -6,20 +6,20 @@ import { prismaClient } from "db";
 import { redisClient } from "redis-client";
 
 export const trainAiModel = handler(async (req, res, next) => {
-  const data = req.body;
-  console.log(req.body)
-  if (!data) return next(new ApiErr(400, "data.error.message"));
+  const data = trainModel.safeParse(req.body);
+  console.log(data);
+  if (!data.success) return next(new ApiErr(400,data.error.message));
   
-  // const task = {
-  //   type: "trainModel",
-  //   payload: {
-  //     zipUrl: data.data.zipUrl,
-  //   },
-  //   callbackUrl: `${process.env.WEBHOOK_URL}/train-model-result`
-  // };
+  const task = {
+    type: "trainModel",
+    payload: {
+      zipUrl: data.data.zipUrl,
+    },
+    callbackUrl: `${process.env.WEBHOOK_URL}/train-model-result`
+  };
 
-  // const redisQueue = await redisClient.rpush("trainModel", JSON.stringify(task));
-  // console.log("redisQueue: ",redisQueue);
+  const redisQueue = await redisClient.rpush("trainModel", JSON.stringify(task));
+  console.log("redisQueue: ",redisQueue);
 
   // const trainModelData = await prismaClient.models.create({
   //   data: {
@@ -33,9 +33,7 @@ export const trainAiModel = handler(async (req, res, next) => {
   //   },
   // });
 
-
-
-  // if (!redisQueue) return next(new ApiErr(500, "Failed to start train model."));
+  if (!redisQueue) return next(new ApiErr(500, "Failed to start train model."));
   return res
     .status(200)
     .json(ApiRes(200, "Model traing started."));
