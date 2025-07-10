@@ -10,7 +10,7 @@ import trainModel from "./routes/trainModel.route"
 app.use('/api/train',trainModel);
 
 import workerRes from "./routes/worker.route"
-app.use(workerRes);
+app.use("/api/webhook",workerRes);
 
 
 app.use(errorHandlerMiddleware);

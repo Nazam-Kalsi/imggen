@@ -4,7 +4,7 @@ async function startWorker() {
   console.log("🚀 Worker is running...");
 
   while (true) {
-    const result = await redisClient.blpop('trainModel', 0); // blocks until task available
+    const result = await redisClient.blpop('trainModel', 0);
     const task = JSON.parse(result?.[1] ?? '{}');
 
     console.log("task:", task);
@@ -14,15 +14,16 @@ async function startWorker() {
 
 async function processTask(task:any) {
 
-  console.log(`⚙️ Processing task ${task.taskId}`);
+  console.log(`⚙️ Processing task ${task.type}`);
   await new Promise((r) => setTimeout(r, 2000));
-  console.log(`✅ Done with task ${task.taskId}`);
+  console.log(`✅ Done with task ${task.type}`);
 
-  await fetch(task.callbackUrl, {
+ const req =  await fetch(task.callbackUrl, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ status: "done" })
+  body: JSON.stringify({ status: "success",modelId:task.payload.modelId })
 });
+console.log(req);
 }
 
 startWorker();
