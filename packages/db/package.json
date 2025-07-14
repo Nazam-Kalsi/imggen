@@ -7,9 +7,15 @@
     ".": "./index.ts"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "cloudinary": "^2.7.0",
+    "node-fetch": "^3.3.2"
   }
 }

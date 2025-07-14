@@ -54,12 +54,12 @@ model Models {
   eyeColor       eyeColor
   bald           Boolean
   status         status           @default(pending)
-  zipUrl         String
+  zipUrl         String?            @default("")
   // images      String[]        // we gonna have new table which contain training images
   trainingImages TrainingImages[]
   outputImages   OutputImages[]
   userId         String
-  user           User             @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }

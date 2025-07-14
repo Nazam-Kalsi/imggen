@@ -32,12 +32,12 @@ export const generateAiImagesFromModel = handler(async(req,res,next)=>{
     const data = imageGeneration.safeParse(req.body);
     if(!data.success) return next(new ApiErr(400,data.error.message));
 
-    const generatedImage = await prismaClient.generateAiImagesFromModel.create({
-        date:{
+    const generatedImage = await prismaClient.outputImages.create({
+        data:{
+            modelId:data.data.modelId,    
             prompt:data.data.prompt,
-            modelId:req.user.id,
             userId:req.user.id ?? "123",
-            imageUrl: "https://picsum.photos/200"
+            imageUrl: "https://picsum.photos/200"    
         }
     })
     return res.status(200).json(ApiRes(200,"Success",{date:generatedImage.id}))
@@ -47,18 +47,24 @@ export const generateAiImagesFromPack = handler(async(req,res,next)=>{
     const data = imageGenerationFromPack.safeParse(req.body);
     if(!data.success) return next(new ApiErr(400,data.error.message));
 
-    const prompts = await prismaClient.prompts.find({
+    const prompts = await prismaClient.packPrompts.findMany({
         where: {
             packId: data.data.packId,
-        }
+        },
+         select: {
+            prompt: true,
+        },
     })
 
-    const generatedImage = await prismaClient.generateAiImagesFromPack.createManyAndReturn({
-        date: prompts.map((x:string)=>{
+    if(!prompts) return next(new ApiErr(404,"Prompts not found."))
+const promptArray = prompts.map(p => p.prompt);
+
+    const generatedImage = await prismaClient.outputImages.createManyAndReturn({
+        data: prompts.map((x:{prompt:string})=>{
                 return ({
                 modelId:data.data.modelId,
-                prompt:x,
-                userId:req.user.id ?? "123",
+                prompt:x.prompt,
+                userId:"4b11e62f-40a6-4b6b-801b-70bb7c06644b",
                 imageUrl: "https://picsum.photos/200"})
             })
         

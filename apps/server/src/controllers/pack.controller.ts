@@ -14,13 +14,13 @@ export const createPack = handler(async (req, res, next) => {
   if (prompts.length > 10)
     return next(new ApiErr(400, "Atleast 10 prompts are required."));
 
-  const pack = await prismaClient.pack.create({ packName });
+  const pack = await prismaClient.pack.create({data:{ packName }});
 
   if(!pack)
     return next(new ApiErr(500, "Failed to create pack."));
 
   const packPrompts = await prismaClient.packPrompts.createManyAndReturn({
-    date: prompts.map((prompt: string) => {
+    data: prompts.map((prompt: string) => {
       return {
         prompt,
         packId: pack.id,

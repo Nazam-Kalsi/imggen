@@ -17,8 +17,8 @@ export const trainAiModel = handler(async (req, res, next) => {
       ethinicity: data.data.ethinicity,
       eyeColor: data.data.eyeColor,
       bald: data.data.bald,
-      zipUrl: data.data.zipUrl,
-      userId: req.user.id ?? "123",
+      // userId: req?.user?.id ?? "123",
+      userId:  "4b11e62f-40a6-4b6b-801b-70bb7c06644b",
     },
   });
   if (!trainModelData) return next(new ApiErr(500, "Failed to save model."));
@@ -27,7 +27,7 @@ export const trainAiModel = handler(async (req, res, next) => {
     type: "trainModel",
     payload: {
       modelId:trainModelData.id,
-      zipUrl: data.data.zipUrl,
+      images: data.data.images,
     },
     callbackUrl: `${process.env.WEBHOOK_URL}/api/webhook/train-model-result`
   };
