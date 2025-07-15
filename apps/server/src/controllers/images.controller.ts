@@ -57,7 +57,6 @@ export const generateAiImagesFromPack = handler(async(req,res,next)=>{
     })
 
     if(!prompts) return next(new ApiErr(404,"Prompts not found."))
-const promptArray = prompts.map(p => p.prompt);
 
     const generatedImage = await prismaClient.outputImages.createManyAndReturn({
         data: prompts.map((x:{prompt:string})=>{
