@@ -32,20 +32,22 @@ import {
 import { z } from "zod";
 import Input from "@components/components/customComponents/input";
 import {trainModel} from "commontypes/types"
+import { UploadFile } from "@components/components/customComponents/fileUpload";
 
-export default function page() {
-
-const form = useForm<typeof trainModel>({
-  resolver: zodResolver(trainModel),
+export default function Page() {
+const form = useForm<FieldValues>({
+  // resolver: zodResolver(trainModel as any),
   defaultValues:{
     name: "",
     type:'',
     ethinicity:'',
     eyeColor:'',
     bald:'',
-    images:''
+    images:[]
   }
 })
+
+console.log(form.formState.errors);
 
   function onSubmit(values: z.infer<typeof trainModel>) {
     console.log(values);
@@ -71,6 +73,22 @@ const form = useForm<typeof trainModel>({
                     <FormLabel>Username</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upload Images</FormLabel>
+                    <FormControl>
+                      <UploadFile {...field} onChange={field.onChange} value={field.value}/>
                     </FormControl>
                     <FormDescription>
                     </FormDescription>

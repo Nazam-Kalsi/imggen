@@ -13,7 +13,7 @@ export const trainModel = z.object({
     ethinicity:z.enum(model.ethinicity),
     eyeColor:z.enum(model.eyeColor),
     bald:z.boolean(),
-    images:z.array(z.string()).min(2,{message:"Atleast 10 images are required."}),
+    images:z.array(z.string()).min(2,{message:"Atleast 4 images are required."}),
     // zipUrl:z.string()
 })
 
