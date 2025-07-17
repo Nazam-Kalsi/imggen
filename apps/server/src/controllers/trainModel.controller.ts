@@ -17,8 +17,7 @@ export const trainAiModel = handler(async (req, res, next) => {
       ethinicity: data.data.ethinicity,
       eyeColor: data.data.eyeColor,
       bald: data.data.bald,
-      // userId: req?.user?.id ?? "123",
-      userId:  "4b11e62f-40a6-4b6b-801b-70bb7c06644b",
+      userId:  req.user.id,
     },
   });
   if (!trainModelData) return next(new ApiErr(500, "Failed to save model."));

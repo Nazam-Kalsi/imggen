@@ -2,11 +2,14 @@
   "name": "server",
   "module": "index.ts",
   "scripts": {
-    "dev": "bun --watch --turbopack index.ts"
+    "dev": "bun --watch --turbopack index.ts",
+    "seed-db": "tsx src/seeding/seed.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/express": "^5.0.3"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -14,9 +17,14 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@clerk/clerk-js": "^5.73.2",
+    "@clerk/express": "^1.7.9",
     "commontypes": "*",
+    "cors": "^2.8.5",
     "db": "*",
     "express": "^5.1.0",
-    "redis":"*"
+    "jsonwebtoken": "^9.0.2",
+    "ora": "^8.2.0",
+    "redis": "*"
   }
 }

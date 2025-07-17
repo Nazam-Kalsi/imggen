@@ -20,6 +20,7 @@ import {
 import { z } from "zod";
 import Input from "@components/components/customComponents/input";
 import {model, trainModel} from "commontypes/types"
+import { UploadFile } from "@components/components/customComponents/fileUpload";
 import { FormInput } from "@components/components/customComponents";
 import FormSelect from "@components/components/customComponents/formSelect";
 
@@ -28,10 +29,9 @@ const formInput = ()=>{
 }
 
 
-export default function page() {
-
-const form = useForm<z.infer<typeof trainModel> & FieldValues>({
-  resolver: zodResolver(trainModel as any),
+export default function Page() {
+const form = useForm<FieldValues>({
+  // resolver: zodResolver(trainModel as any),
   defaultValues:{
     name: '',
     type:'',
@@ -41,6 +41,8 @@ const form = useForm<z.infer<typeof trainModel> & FieldValues>({
     images:[]
   }
 })
+
+console.log(form.formState.errors);
 
   function onSubmit(values: z.infer<typeof trainModel>) {
     console.log(values);
@@ -57,13 +59,38 @@ const form = useForm<z.infer<typeof trainModel> & FieldValues>({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="">
-              <FormInput form={form} name="name" label="Model name" placeHolder="model name"/>
-              <FormSelect form={form} name='type' label="Select model type" data={(model.type) as any} placeHoder="Select Type"/>
-              <FormSelect form={form} name='ethinicity' label="Select model Ethinicity" data={(model.ethinicity) as any} placeHoder="Select Ethinicity"/>
-              <FormSelect form={form} name='eyeColor' label="Select model eyeColor" data={(model.eyeColor) as any} placeHoder="Select Eye Color"/>
-              <FormSelect form={form} name='bald' label="Is Bald" data={['true','false']} placeHoder="Is model bald"/>
-              <FormInput form={form} name="images" label="Model Images" type="file" placeHolder="Image URLs (comma separated)"/>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upload Images</FormLabel>
+                    <FormControl>
+                      <UploadFile {...field} onChange={field.onChange} value={field.value}/>
+                    </FormControl>
+                    <FormDescription>
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
         <CardFooter className="flex-col gap-2">
           <Button type="submit" className="w-full">
             Train
