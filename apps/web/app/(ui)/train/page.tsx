@@ -9,36 +9,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@components/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@components/components/ui/select";
+
 import { useForm, FieldValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@components/components/ui/form";
 import { z } from "zod";
 import Input from "@components/components/customComponents/input";
-import {trainModel} from "commontypes/types"
+import {model, trainModel} from "commontypes/types"
 import { UploadFile } from "@components/components/customComponents/fileUpload";
+import { FormInput } from "@components/components/customComponents";
+import FormSelect from "@components/components/customComponents/formSelect";
+
+const formInput = ()=>{
+
+}
+
 
 export default function Page() {
 const form = useForm<FieldValues>({
   // resolver: zodResolver(trainModel as any),
   defaultValues:{
-    name: "",
+    name: '',
     type:'',
     ethinicity:'',
     eyeColor:'',
@@ -54,8 +49,8 @@ console.log(form.formState.errors);
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Card className="w-full max-w-sm">
+    <div className="flex justify-center items-center min-h-screen w-full p-6">
+      <Card className="w-full max-w-1/2">
         <CardHeader>
           <CardTitle>Train Model</CardTitle>
           <CardDescription>
