@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { cn } from "@components/lib/utils";
 import { Button } from "@components/components/ui/button";
 import { Card, CardContent } from "@components/components/ui/card";
@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@components/components/customComponents";
 import { Form } from "@components/components/ui/form";
 import { GalleryVerticalEnd } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "app/store/store";
+import { logedIn } from "app/store/user.slice";
 
 const signInSchema = z.object({
   identifier: z.string().min(3, { message: "Username is required." }),
@@ -22,6 +24,7 @@ const signInSchema = z.object({
 type Props = {};
 
 function Page({}: Props) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { isLoaded, signIn, setActive } = useSignIn();
 
@@ -34,7 +37,6 @@ function Page({}: Props) {
   });
   const handleSubmit = async (data: any) => {
     if (!isLoaded) return;
-
     try {
       const result = await signIn.create({
         identifier: data.identifier,
@@ -42,69 +44,85 @@ function Page({}: Props) {
       });
 
       if (result.status === "complete") {
-        console.log(result);
         await setActive({ session: result.createdSessionId });
-        router.push("/");
+        console.log("logedIn: ",result);
+        dispatch(logedIn({id:(result.id as string)}));
+        router.push("/train");
       } else {
         /*Investigate why the sign-in hasn't completed */
         console.log(result);
+        console.log();
       }
     } catch (err: any) {
       toast.error(err.errors[0].longMessage);
       console.error("error", err.errors[0].longMessage);
     }
   };
+  
+const user = useAppSelector((state) => state.authSlice.user);
+  useEffect(()=>{
+    if(user) router.push("/train");
+  },[user])
+
+
+  const loading = useAppSelector((state) => state.authSlice.loading);
+  useEffect(()=>{
+    ;(async()=>{
+      if(loading) return;
+      
+
+    })();
+  },[loading])
 
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <div className="bg-background flex min-h-[300vh] flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center gap-2">
-                <a
-                  href="#"
-                  className="flex flex-col items-center gap-2 font-medium"
-                >
-                  <div className="flex size-8 items-center justify-center rounded-md">
-                    <GalleryVerticalEnd className="size-6" />
-                  </div>
-                  <span className="sr-only">Acme Inc.</span>
-                </a>
-                <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
-                <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <a href="#" className="underline underline-offset-4">
-                    Sign up
-                  </a>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col items-center gap-2">
+              <a
+                href="#"
+                className="flex flex-col items-center gap-2 font-medium"
+              >
+                <div className="flex size-8 items-center justify-center rounded-md">
+                  <GalleryVerticalEnd className="size-6" />
                 </div>
+                <span className="sr-only">Acme Inc.</span>
+              </a>
+              <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+              <div className="text-center text-sm">
+                Don&apos;t have an account?{" "}
+                <a href="#" className="underline underline-offset-4">
+                  Sign up
+                </a>
               </div>
-
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(handleSubmit)}
-                  className="p-6 md:p-8 "
-                >
-                  <div className="flex flex-col">
-                    <FormInput
-                      form={form}
-                      name="identifier"
-                      label="Username/Email"
-                      placeHolder="name"
-                    />
-                    <FormInput
-                      form={form}
-                      name="password"
-                      label="Password"
-                      placeHolder="********"
-                      type="password"
-                    />
-                    <Button className="w-full">Submit</Button>
-                  </div>
-                </form>
-              </Form>
             </div>
-          
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="p-6 md:p-8 "
+              >
+                <div className="flex flex-col">
+                  <FormInput
+                    form={form}
+                    name="identifier"
+                    label="Username/Email"
+                    placeHolder="name"
+                  />
+                  <FormInput
+                    form={form}
+                    name="password"
+                    label="Password"
+                    placeHolder="********"
+                    type="password"
+                  />
+                  <Button className="w-full">Submit</Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+
           <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
             By clicking continue, you agree to our{" "}
             <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.

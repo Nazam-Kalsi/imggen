@@ -29,8 +29,15 @@ import {model, trainModel} from "commontypes/types"
 import { UploadFile } from "@components/components/customComponents/fileUpload";
 import { FormInput } from "@components/components/customComponents";
 import FormSelect from "@components/components/customComponents/formSelect";
+import { apiReq } from "@utils/apiReq";
+import { useEffect } from "react";
+import { useAppDispatch } from "app/store/store";
+import { useAuth } from "@clerk/nextjs";
+import { logedIn } from "app/store/user.slice";
 
 export default function Page() {
+  const dispatch = useAppDispatch();
+  const { getToken } = useAuth();
 const form = useForm<FieldValues>({
   // resolver: zodResolver(trainModel as any),
   defaultValues:{
@@ -42,6 +49,15 @@ const form = useForm<FieldValues>({
     images:[]
   }
 })
+useEffect(() => {
+    (async () => {
+      let token = await getToken();
+      if (!token) {token = ""};
+      const res = await apiReq('/auth/get-current-user', 'GET', token);
+      if (!res.success) return;
+      dispatch(logedIn(res.res.data));
+    })();
+  }, []);
 
   function onSubmit(values: z.infer<typeof trainModel>) {
     console.log(values);

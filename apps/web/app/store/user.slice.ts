@@ -3,13 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // Define a type for the slice state
 export interface UserT {
   user: {[key:string]:string} | null,
-  isLogedIn:boolean
+  loading:boolean
 }
 
 // Define the initial state using that type
 const initialState: UserT = {
   user:null,
-  isLogedIn:false
+  loading:true
 }
 
 export const userSlice = createSlice({
@@ -19,11 +19,11 @@ export const userSlice = createSlice({
   reducers: {
    logedIn: (state, action: PayloadAction<UserT['user']>)=>{
         state.user = action.payload
-        state.isLogedIn = true
+        state.loading = false
    },
    logedOut: (state)=>{
     state.user = null
-    state.isLogedIn = false
+    state.loading = true
    }
   }
 })
