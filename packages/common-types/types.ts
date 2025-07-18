@@ -36,3 +36,14 @@ export const imageGenerationFromPack = z.object({
     modelId:z.string(),
     packId:z.string(),
 })
+
+export const signUpSchema = z.object({
+  userName:z.string().min(3, { message: "Username is required." }),
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters long." }),
+})
+export const signInSchema = z.object({
+  identifier:z.string().min(3, { message: "Username is required." }),
+  password: z.string().min(8, { message: "Password is required." }),
+})
+

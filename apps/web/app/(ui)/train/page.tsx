@@ -87,8 +87,8 @@ const form = useForm<FieldValues>({
               control={form.control}
               name='images'
               render={({ field }) => (
-                <FormItem className='relative mb-6'>
-                  <FormLabel>Images</FormLabel>
+                <FormItem className='flex flex-col justify-center items-center relative mb-6'>
+                  <FormLabel className='self-start'>Images</FormLabel>
                   <FormControl>
                   <UploadFile onChange={field.onChange} value={field.value}  />                     
                   </FormControl>
