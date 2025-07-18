@@ -18,6 +18,8 @@ datasource db {
 model User {
   id        String        @unique @default(uuid())
   userName  String
+  email     String        @unique
+  avatarUrl String?       @default("https://picsum.photos/200")
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   prompts   UserPrompts[]
@@ -28,14 +30,14 @@ model UserPrompts {
   id        String   @unique @default(uuid())
   prompt    String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Pack {
   id       String        @unique @default(uuid())
-  packName String
+  packName String        @unique()
   prompts  PackPrompts[]
 }
 
@@ -43,7 +45,7 @@ model PackPrompts {
   id     String @unique @default(uuid())
   prompt String
   packId String
-  pack   Pack   @relation(fields: [packId], references: [id])
+  pack   Pack   @relation(fields: [packId], references: [id], onDelete: Cascade)
 }
 
 model Models {
@@ -59,7 +61,7 @@ model Models {
   trainingImages TrainingImages[]
   outputImages   OutputImages[]
   userId         String
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -68,7 +70,7 @@ model TrainingImages {
   id        String   @unique @default(uuid())
   imagesUrl String[]
   modelId   String
-  model     Models   @relation(fields: [modelId], references: [id])
+  model     Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -79,7 +81,7 @@ model OutputImages {
   prompt    String
   modelId   String
   userId    String
-  model     Models   @relation(fields: [modelId], references: [id])
+  model     Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

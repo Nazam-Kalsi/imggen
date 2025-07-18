@@ -21,6 +21,7 @@ import {
   InputOTPSlot,
 } from "@components/components/ui/input-otp";
 import { useSignUp } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -32,7 +33,7 @@ type Props = {};
 
 function Page({}: Props) {
   const { signUp, isLoaded, setActive } = useSignUp();
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema as any),
     defaultValues: {
@@ -69,6 +70,9 @@ function Page({}: Props) {
       }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
+        toast.success("OTP verified successfully!");
+        router.push('/')
+        
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
