@@ -15,20 +15,23 @@ import { useRouter } from "next/navigation";
 import { FormInput } from "@components/components/customComponents";
 import { Card, CardContent } from "@components/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 type Props = {};
 
 const signUpSchema = z.object({
-  userName:z.string().min(3, { message: "Username is required." }),
+  userName: z.string().min(3, { message: "Username is required." }),
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters long." }),
-})
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." }),
+});
 
 function Page({}: Props) {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
-  
+
   const form = useForm<z.infer<typeof signUpSchema>>({
-    resolver:zodResolver(signUpSchema as any),
+    resolver: zodResolver(signUpSchema as any),
     defaultValues: {
       email: "",
       password: "",
@@ -62,9 +65,16 @@ function Page({}: Props) {
   };
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+    <div className="flex flex-col items-center justify-center p-4 md:p-8">
+      <Image
+        src="/grad2.jpg"
+        alt="svg"
+        width={500}
+        height={500}
+        className="absolute object-cover inset-0 size-full opacity-40 z-[-99]"
+      />
       <div className="w-full max-w-sm md:max-w-3xl">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
           <Card className="overflow-hidden p-0 ">
             <CardContent className="relative grid p-0 md:grid-cols-2 ">
               <Form {...form}>
@@ -99,15 +109,25 @@ function Page({}: Props) {
                       type="password"
                     />
                     <Button className="w-full">Submit</Button>
+                    <div className="text-center text-sm">
+                      Already have an account?{" "}
+                      <Link
+                        href="/sign-in"
+                        className="underline underline-offset-4"
+                      >
+                        Sign up
+                      </Link>
+                    </div>
                   </div>
                 </form>
               </Form>
-              <div className="bg-red-900 relative md:block">
+
+              <div className=" relative md:block">
                 <Image
-                  src="/placeholder.svg"
+                  src="/frame2.png"
                   alt="Image"
                   fill
-                  className=" absolute top-0 right-0 inset-0 h-full object-cover dark:brightness-[0.2] dark:grayscale"
+                  className=" absolute top-0 right-0 inset-0 h-full object-cover brightness-[0.2] dark:grayscale grayscale"
                   sizes="100vw"
                   priority
                 />

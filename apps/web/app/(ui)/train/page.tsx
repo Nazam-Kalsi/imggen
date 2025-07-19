@@ -34,6 +34,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "app/store/store";
 import { useAuth } from "@clerk/nextjs";
 import { logedIn } from "app/store/user.slice";
+import Image from "next/image";
 
 export default function Page() {
   const dispatch = useAppDispatch();
@@ -64,26 +65,13 @@ useEffect(() => {
   }
 
   return (
+    <div className='relative w-full'>
+      <img
+        src="./grad2.jpg"
+        alt="Image"
+        className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.1] hidden dark:block  dark:grayscale z-[-9]"
+      />
     <div className="flex justify-center items-center min-h-screen w-full p-6">
-      {/* <Card className="w-full max-w-1/2">
-        <CardHeader>
-          <CardTitle>Train Model</CardTitle>
-          <CardDescription>
-            Fill in the details and hit train
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Train
-          </Button>
-        </CardFooter>
-            </form>
-          </Form>
-        </CardContent>
-      </Card> */}
       <Card className="w-full max-w-1/2">
         <CardHeader>
           <CardTitle>Train Model</CardTitle>
@@ -121,6 +109,7 @@ useEffect(() => {
           </Form>
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 }

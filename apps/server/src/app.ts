@@ -23,6 +23,8 @@ app.use("/api/webhook",workerRes);
 
 import authRouter from "./routes/user.route"
 app.use("/api/auth",authRouter);
+import promptPackRouter from "./routes/pack.route"
+app.use("/api/pack",promptPackRouter);
 
 app.use(errorHandlerMiddleware);
 

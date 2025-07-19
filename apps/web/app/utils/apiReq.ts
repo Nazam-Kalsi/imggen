@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from "axios"
 import { toast } from "sonner";
 
-export const apiReq = async(url:string, method:string,token:string, body?:{[key:string]:string})=>{
+export const apiReq = async(url:string, method:string,token?:string, body?:{[key:string]:string})=>{
     try {
         const res = await axios({
             method:method.toUpperCase(),
@@ -17,7 +17,7 @@ export const apiReq = async(url:string, method:string,token:string, body?:{[key:
     } catch (error) {
         const axiosErr = isAxiosError(error);
         if(axiosErr){
-            toast.error(error.response?.data.message);
+            toast.error(error.response?.data.message || "Error occur");
             return {res:error.response?.data.message,success:false}
         }else{
             toast.error("Error while sending request, please log-in again.")

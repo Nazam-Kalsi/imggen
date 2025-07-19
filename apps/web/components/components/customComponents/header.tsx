@@ -43,21 +43,32 @@ const isUser = useAppSelector((state) => state.authSlice.user);
   }, [lastScrollY]);
 
   return (
+
     <div
       className={`fixed top-0 left-0 right-0 z-50 border w-11/12 mx-auto rounded-lg transition-transform duration-300 ${
         showHeader ? "translate-y-4" : "-translate-y-full"
       }  border-b shadow  rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10`}
     >
+      
       <div className="flex justify-between items-center p-2 w-full mx-auto rounded-md">
         <Link href="/" className="py-2 px-4 rounded-lg">
           Imggen
         </Link>
 
+
         <div className="flex items-center justify-between py-2 px-4 rounded-lg">
           {isUser ? (
+            <>
+            <Link href={"/image-generation"}>
+            <Button variant="ghost">
+              Generate Image
+            </Button>
+            </Link>
+
             <Button variant="ghost" onClick={s}>
               Sign out
             </Button>
+            </>
           ) : (
             <Link href="/sign-in">
               <Button variant="ghost">Sign in</Button>
@@ -65,8 +76,11 @@ const isUser = useAppSelector((state) => state.authSlice.user);
           )}
           <ThemeToggler />
         </div>
+        
       </div>
-    </div>)
+    </div>
+    
+  )
 }
 
 export default Header
