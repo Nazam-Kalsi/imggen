@@ -75,16 +75,16 @@ function Page({}: Props) {
   return (
     <>
     {loading&& <Loading/>}
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center ">
       <Image
         src="/grad2.jpg"
         alt="svg"
         width={500}
         height={500}
-        className="absolute object-cover inset-0 size-full opacity-40 z-[-99] hidden dark:block"
+        className="absolute object-cover inset-0 size-full opacity-40 z-[1] hidden dark:block"
       />
       <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 relative z-[2]">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center gap-2">
               <Link href={'/'} className="flex flex-col items-center gap-2 font-medium">
@@ -105,7 +105,7 @@ function Page({}: Props) {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
-                className="p-6 md:p-8 "
+                className="p-6 md:p-8"
               >
                 <div className="flex flex-col">
                   <FormInput

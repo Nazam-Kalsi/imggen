@@ -16,7 +16,7 @@ type Props = {
   type?: string;
   placeHolder: string;
   className?: string;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 export function FormInput({
   form,
@@ -25,7 +25,8 @@ export function FormInput({
   type = 'text',
   placeHolder,
   className = '',
-}: Props) {
+  ...rest
+} : Props ) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   // Determine the input type dynamically
@@ -44,7 +45,8 @@ export function FormInput({
                 {...field}
                 type={inputType}
                 placeholder={placeHolder}
-                className={`w-full border p-2 py-1 rounded-md pr-10 focus:outline focus:outline-violet-700 ${className}`}
+                {...rest}
+                className={`w-full border p-2 py-1 rounded-2xl pr-10 focus:outline focus:outline-violet-700 ${className}`}
               />
               {type === 'password' && (
                 <Button

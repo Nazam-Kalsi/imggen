@@ -12,7 +12,7 @@ export default function Home() {
         className="absolute object-cover inset-0 size-full opacity-40 hidden dark:block"
       />
      <Noise/>
-      <div className="h-[88vh] flex justify-center items-center">
+      <div className="h-[84vh] flex justify-center items-center">
         <div className="w-3/4 text-center">
           <h2 className="text-8xl text-center font-bold leading-28">
             <span className="text-violet-600 relative z-[99]">Reimage&nbsp;</span>

@@ -1,14 +1,14 @@
 import axios, { isAxiosError } from "axios"
 import { toast } from "sonner";
 
-export const apiReq = async(url:string, method:string,token?:string, body?:{[key:string]:string})=>{
+export const apiReq = async(url:string, method:string,token?:string, body?:any)=>{
     try {
         const res = await axios({
             method:method.toUpperCase(),
             url:`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`,
             data:body,
             headers:{
-                "Content-Type":"application/json",
+                // "Content-Type":"application/json",
                 "Authorization":`Bearer ${token}`
             }            
         })

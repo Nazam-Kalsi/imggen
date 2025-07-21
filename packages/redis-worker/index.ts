@@ -11,8 +11,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+type imageT = {
+  originalname: string;
+  mimetype: string;
+  buffer: Buffer;
+  size: number;
+};
+
 const downloadImages = async (
-  imageUrl: string,
+  imageUrl: imageT,
   ImagePath: string,
   modelId: string
 ) => {
@@ -22,18 +29,10 @@ const downloadImages = async (
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
   }
-  const res = await fetch(imageUrl);
-  if (!res.ok) throw new Error(`Failed to download ${imageUrl}`);
-
-  const contentType = res.headers.get("content-type");
-  let extension = "";
-  if (contentType?.includes("image/jpeg")) extension = ".jpg";
-  else if (contentType?.includes("image/png")) extension = ".png";
-
-  const buffer = await res.buffer();
-
+  const extension = path.extname(imageUrl.originalname);
   const filePath = `${filePathWithOutExtension}${extension}`;
-  fs.writeFileSync(filePath, buffer);
+  const realBuffer = Buffer.from(imageUrl.buffer.data);
+  fs.writeFileSync(filePath, realBuffer);
 };
 
 async function zipFolder(
@@ -56,26 +55,27 @@ async function zipFolder(
 async function uploadZipToCloudinary(filePath: string): Promise<any> {
   const byteArrayBuffer = fs.readFileSync(filePath);
   const uploadResult = await new Promise((resolve, reject) => {
-    // cloudinary.uploader.upload_stream({folder:'imggen',resource_type: "raw"},(error, uploadResult) => {
-    //       if(error) {console.log("cloudinary error : ",error);
-    //           resolve(null);
-    //       }
-    //       return resolve(uploadResult);
-    //   }).end(byteArrayBuffer);
-    cloudinary.uploader.upload(
-      filePath,
-      {
-        folder: "imggen",
-        resource_type: "auto",
-      },
-      (error, uploadResult) => {
-        if (error) {
-          console.log("cloudinary error : ", error);
-          resolve(null);
+    cloudinary.uploader.upload_stream({ folder: "imggen", resource_type: "raw" },
+        (error, uploadResult) => {if (error) {
+            console.log("cloudinary error : ", error);
+            resolve(null);
+          }
+          return resolve(uploadResult);
         }
-        return resolve(uploadResult);
-      }
-    );
+      )
+      .end(byteArrayBuffer);
+    // cloudinary.uploader.upload(filePath,{
+    //     folder: "imggen",
+    //     resource_type: "auto",
+    //   },
+    //   (error, uploadResult) => {
+    //     if (error) {
+    //       console.log("cloudinary error : ", error);
+    //       resolve(null);
+    //     }
+    //     return resolve(uploadResult);
+    //   }
+    // );
   });
   return uploadResult;
 }
@@ -92,7 +92,7 @@ async function startWorker() {
 
 async function processTask(task: any) {
   console.log(`⚙️ Processing task ${task.type}`);
-  (task.payload.images as string[]).forEach(async (url, index) => {
+  (task.payload.images as imageT[]).forEach(async (url, index) => {
     const path = `image_${index + 1}`;
     downloadImages(url, path, task.payload.modelId);
   });
@@ -123,6 +123,14 @@ async function processTask(task: any) {
       body: JSON.stringify({ status: "failed", modelId: task.payload.modelId }),
     });
   }
+  // const req = await fetch(task.callbackUrl, {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({
+  //     status: "success",
+  //     modelId: task.payload.modelId,
+  //   }),
+  // });
   console.log("Done");
 }
 

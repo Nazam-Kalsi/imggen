@@ -6,7 +6,7 @@ type Props = {}
 
 function Loading({}: Props) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/10 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
       <Mirage
         size="100"
         speed="2.5"

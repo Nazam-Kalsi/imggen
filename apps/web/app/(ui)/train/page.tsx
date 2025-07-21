@@ -25,28 +25,32 @@ import {
 
 import { z } from "zod";
 import Input from "@components/components/customComponents/input";
-import {model, trainModel} from "commontypes/types"
+import {model,trainModel} from "commontypes/types"
+
 import { UploadFile } from "@components/components/customComponents/fileUpload";
 import { FormInput } from "@components/components/customComponents";
 import FormSelect from "@components/components/customComponents/formSelect";
 import { apiReq } from "@utils/apiReq";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "app/store/store";
 import { useAuth } from "@clerk/nextjs";
-import { logedIn } from "app/store/user.slice";
-import Image from "next/image";
+import { logedIn } from "app/store/user.slice"; 
+import { toast } from "sonner";
+import Loading from "@components/components/customComponents/loading";
+import {modelTypes} from "commontypes/inferTypes";
 
 export default function Page() {
   const dispatch = useAppDispatch();
+  const [loading, setLoading ]= useState<boolean>(false);
   const { getToken } = useAuth();
-const form = useForm<FieldValues>({
-  // resolver: zodResolver(trainModel as any),
+const form = useForm<modelTypes>({
+  resolver: zodResolver(trainModel as any),
   defaultValues:{
     name: '',
-    type:'',
-    ethinicity:'',
-    eyeColor:'',
-    bald:'',
+    type:undefined,
+    ethinicity:undefined,
+    eyeColor:undefined,
+    bald:undefined,
     images:[]
   }
 })
@@ -60,12 +64,34 @@ useEffect(() => {
     })();
   }, []);
 
-  function onSubmit(values: z.infer<typeof trainModel>) {
-    console.log(values);
+ async  function onSubmit(values: modelTypes) {
+   setLoading(true);
+   const token =await getToken();
+    const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("type", values.type);
+      formData.append("ethinicity", values.ethinicity);
+      formData.append("eyeColor", values.eyeColor);
+      formData.append("bald", values.bald);
+        (values.images as File[])
+          .filter((file) => file instanceof File)
+          .forEach((file) => {
+            formData.append('images', file);
+          });
+
+    const res = await apiReq('/model/train-model', 'POST', (token as string), formData);
+    console.log("res: ", res);
+    if (!res.success){
+      setLoading(false);
+      return;
+  }
+  toast.success("Model trained successfully");
+  setLoading(false);
   }
 
   return (
     <div className='relative w-full'>
+      {loading && <Loading/>}
       <img
         src="./grad2.jpg"
         alt="Image"

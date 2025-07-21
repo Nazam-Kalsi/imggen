@@ -19,7 +19,7 @@ import { toast } from "sonner";
 type props={
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onChange: (...event: any) => void;
-    value:File[]
+    value: File[] | { originalname: string; mimetype: string; buffer: Buffer; size: number; }[]
 }
 export function UploadFile({onChange,value}:props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,7 +86,7 @@ export function UploadFile({onChange,value}:props) {
  
   return (
     <FileUpload
-      value={value}
+      value={value as File[]}
       onValueChange={onChange}
       onUpload={onUpload}
       onFileReject={onFileReject}
@@ -112,7 +112,7 @@ export function UploadFile({onChange,value}:props) {
         </FileUploadTrigger>
       </FileUploadDropzone>
       <FileUploadList>
-        {value.map((file, index) => (
+        {(value as File[]).map((file, index) => (
           <FileUploadItem key={index} value={file} className="flex-col">
             <div className="flex w-full items-center gap-2">
               <FileUploadItemPreview />

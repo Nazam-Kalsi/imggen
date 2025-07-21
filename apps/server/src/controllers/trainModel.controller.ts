@@ -6,8 +6,18 @@ import { prismaClient } from "db";
 import { redisClient } from "redis-client";
 
 export const trainAiModel = handler(async (req, res, next) => {
-  const data = trainModel.safeParse(req.body);
-  console.log(data);
+    const { name, type, ethinicity, eyeColor, bald } = req.body;
+    const images = req.files as Express.Multer.File[];
+    console.log(req.user.id)
+    const data = trainModel.safeParse({
+        name,
+        type,
+        ethinicity,
+        eyeColor,
+        bald,
+        images
+    });
+    
   if (!data.success) return next(new ApiErr(400,data.error.message));
   
   const trainModelData = await prismaClient.models.create({
@@ -16,7 +26,7 @@ export const trainAiModel = handler(async (req, res, next) => {
       type: data.data.type,
       ethinicity: data.data.ethinicity,
       eyeColor: data.data.eyeColor,
-      bald: data.data.bald,
+      bald: Boolean(data.data.bald),
       userId:  req.user.id,
     },
   });
@@ -38,7 +48,7 @@ export const trainAiModel = handler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(ApiRes(200, "Model traing started.",{modelId:trainModelData.id}));
+    .json(ApiRes(200, "Model training started.",{modelId:trainModelData.id}));
 });
 
 
@@ -55,6 +65,17 @@ export const getModelById = handler(async(req,res,next)=>{
   if (!model) return next(new ApiErr(404, "Model not found."));
   if(model.status!='success') return next(new ApiErr(400, "Training is in process."));
 
-  return res.status(200).json(ApiRes(200, "Success", { data: model }))
-    
+  return res.status(200).json(ApiRes(200, "Success", { data: model }))    
+})
+
+export const getAllModels = handler(async (req, res, next) => {
+  const user = req.user.id;
+  const models = await prismaClient.models.findMany({
+    where:{
+      user:user.id
+    }
+  })
+  if (!models) return next(new ApiErr(404, "No models found."));
+  return res.status(200).json(ApiRes(200, "Success", { data: models }));
+
 })

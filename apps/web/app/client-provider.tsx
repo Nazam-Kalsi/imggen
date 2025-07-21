@@ -15,10 +15,9 @@ function AppInitializer() {
   useEffect(() => {
     (async () => {
       let token = await getToken();
-      if (!token) {token = ""};
+      if (!token) {return;};
       const res = await apiReq('/auth/get-current-user', 'GET', token);
       if (!res.success) return;
-
       dispatch(logedIn(res.res.data));
     })();
   }, []);

@@ -4,9 +4,24 @@ import ora from "ora";
 
 const data = {
   packs: [
-    { packName: "food", id: "food" },
-    { packName: "cat", id: "cat" },
-    { packName: "twin tower", id: "twin tower" },
+  {
+    packName: "food",
+    description: "A delicious collection of culinary delights from around the world, including fruits, meals, and desserts.",
+    imageUrl: "",
+    id: "food"
+  },
+  {
+    packName: "cat",
+    description: "A cute and charming pack of various cats in playful, sleepy, and curious poses.",
+    imageUrl: "",
+    id: "cat"
+  },
+  {
+    packName: "twin tower",
+    description: "A striking visual pack featuring the iconic Twin Towers, showcasing architectural beauty and historical significance.",
+    imageUrl: "",
+    id: "twin tower"
+  }
   ],
   packPrompts: [
     // 🌮 Food Prompts

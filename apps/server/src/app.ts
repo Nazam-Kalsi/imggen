@@ -16,15 +16,19 @@ app.use(express.urlencoded({extended:true}));
 app.use(clerkMiddleware());
 
 import trainModel from "./routes/trainModel.route"
-app.use('/api/train',trainModel);
+app.use('/api/model',trainModel);
 
 import workerRes from "./routes/worker.route"
 app.use("/api/webhook",workerRes);
 
 import authRouter from "./routes/user.route"
 app.use("/api/auth",authRouter);
+
 import promptPackRouter from "./routes/pack.route"
 app.use("/api/pack",promptPackRouter);
+
+import imageGenerationRouter from "./routes/pack.route"
+app.use("/api/image",imageGenerationRouter);
 
 app.use(errorHandlerMiddleware);
 

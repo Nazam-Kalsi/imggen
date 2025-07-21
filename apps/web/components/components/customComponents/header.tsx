@@ -8,12 +8,30 @@ import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from 'app/store/store'
 import { logedOut } from 'app/store/user.slice'
 
-type Props = {}
 
-function Header({}: Props) {
+
+function Header() {
 const dispatch = useAppDispatch();
 const isUser = useAppSelector((state) => state.authSlice.user);
 
+const btns = [
+  {
+    name: "Image generation",
+    href: "/image-generation",
+  },
+  {
+    name: "Train model",
+    href: "/train",
+  },
+  {
+    name: "Packs",
+    href: "/prompts",
+  },
+  {
+    name: "Home",
+    href: `/home/${isUser?.data?.id}`,
+  },
+];
     const router = useRouter();
       const { signOut } = useClerk();
       const s = async()=>{
@@ -59,12 +77,13 @@ const isUser = useAppSelector((state) => state.authSlice.user);
         <div className="flex items-center justify-between py-2 px-4 rounded-lg">
           {isUser ? (
             <>
-            <Link href={"/image-generation"}>
-            <Button variant="ghost">
-              Generate Image
-            </Button>
-            </Link>
-
+            {
+              btns.map((btn, index) => (
+                <Link key={index} href={btn.href}>
+                  <Button variant="ghost">{btn.name}</Button>
+                </Link>
+              ))
+            }
             <Button variant="ghost" onClick={s}>
               Sign out
             </Button>

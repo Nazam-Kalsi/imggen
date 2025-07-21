@@ -2,7 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // Define a type for the slice state
 export interface UserT {
-  user: {[key:string]:string} | null,
+  user: {
+    id:string,
+    [key:string]:string} | null,
   loading:boolean
 }
 

@@ -21,7 +21,7 @@ export const authMid = async (req:Request, res:Response, next:NextFunction) => {
   const decodedToken = jwt.verify(token,publicKey!);
   if(!decodedToken) return next(new ApiErr(400, "Invalid token payload"));
   const user = await clerkClient.users.getUser((decodedToken?.sub as string));
-  console.log(user);
+  // console.log(user);
   const userInfo = {
     id:user.id,
     avatar:user.imageUrl,
