@@ -12,8 +12,10 @@ import { logedOut } from 'app/store/user.slice'
 
 function Header() {
 const dispatch = useAppDispatch();
-const isUser = useAppSelector((state) => state.authSlice.user);
+const router = useRouter();
 
+const isUser = useAppSelector((state) => state.authSlice.user);
+console.log(isUser);
 const btns = [
   {
     name: "Image generation",
@@ -32,7 +34,6 @@ const btns = [
     href: `/home/${isUser?.data?.id}`,
   },
 ];
-    const router = useRouter();
       const { signOut } = useClerk();
       const s = async()=>{
         const result = await signOut();

@@ -16,7 +16,7 @@ type Props = {
   type?: string;
   placeHolder: string;
   className?: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'form' | 'name' | 'type' | 'placeholder' | 'className'>;
 
 export function FormInput({
   form,

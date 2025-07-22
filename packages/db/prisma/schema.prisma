@@ -78,14 +78,15 @@ model TrainingImages {
 }
 
 model OutputImages {
-  id        String   @unique @default(uuid())
-  imageUrl  String   @default("https://picsum.photos/200")
-  prompt    String
-  modelId   String
-  userId    String
-  model     Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                      String   @unique @default(uuid())
+  imageUrl                String?  
+  prompt                  String
+  modelId                 String
+  userId                  String
+  isGeneratedSuccessfully Boolean  @default(false)
+  model                   Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 }
 
 enum eyeColor {

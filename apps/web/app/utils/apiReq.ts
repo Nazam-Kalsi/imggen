@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from "axios"
 import { toast } from "sonner";
 
-export const apiReq = async(url:string, method:string,token?:string, body?:any)=>{
+export const apiReq = async(url:string, method:string,token?:any, body?:any)=>{
     try {
         const res = await axios({
             method:method.toUpperCase(),
@@ -12,7 +12,7 @@ export const apiReq = async(url:string, method:string,token?:string, body?:any)=
                 "Authorization":`Bearer ${token}`
             }            
         })
-        console.log(res);
+        // console.log(res);
         return {res,success:true}
     } catch (error) {
         const axiosErr = isAxiosError(error);

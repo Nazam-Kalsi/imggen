@@ -15,16 +15,14 @@ export default function Home() {
       <div className="h-[84vh] flex justify-center items-center">
         <div className="w-3/4 text-center">
           <h2 className="text-8xl text-center font-bold leading-28">
-            <span className="text-violet-600 relative z-[99]">Reimage&nbsp;</span>
-            you <br />Images and Videos
+            Transform Your Photos with
+            <span className="text-violet-600 relative z-[99]"> AI MAGIC</span>
           </h2>
           <p className="mt-3">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Harum
-            placeat aliquam, debitis rem adipisci accusantium, quos deleniti
+            Create stunning visuals with just a few clicks.
           </p>
         </div>
         <div>
-
         </div>
       </div>
     </div>

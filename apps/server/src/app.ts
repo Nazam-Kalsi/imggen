@@ -27,8 +27,8 @@ app.use("/api/auth",authRouter);
 import promptPackRouter from "./routes/pack.route"
 app.use("/api/pack",promptPackRouter);
 
-import imageGenerationRouter from "./routes/pack.route"
-app.use("/api/image",imageGenerationRouter);
+import imageRouter from "./routes/image.route"
+app.use("/api/image",imageRouter);
 
 app.use(errorHandlerMiddleware);
 

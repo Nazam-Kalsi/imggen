@@ -1,137 +1,187 @@
-import { redisClient } from "redis-client";
-import { v2 as cloudinary } from "cloudinary";
-import fetch from "node-fetch";
-import fs from "fs";
-import path from "path";
-import archiver from "archiver";
+import imageGenWorker from './workers/imageGenerationWorker'
+import modelTrainWorker from './workers/modelTrainWorker'
+// import { createRedisClient } from "redis-client";
+// import { v2 as cloudinary } from "cloudinary";
+// import fetch from "node-fetch";
+// import fs from "fs";
+// import path from "path";
+// import archiver from "archiver";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// const redisClient1 = createRedisClient();
+// const redisClient2 = createRedisClient();
 
-type imageT = {
-  originalname: string;
-  mimetype: string;
-  buffer: Buffer;
-  size: number;
-};
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
 
-const downloadImages = async (
-  imageUrl: imageT,
-  ImagePath: string,
-  modelId: string
-) => {
-  const baseDir = path.join(__dirname, "temp", modelId);
-  const filePathWithOutExtension = path.join(baseDir, ImagePath);
+// type imageT = {
+//   originalname: string;
+//   mimetype: string;
+//   buffer: Buffer;
+//   size: number;
+// };
 
-  if (!fs.existsSync(baseDir)) {
-    fs.mkdirSync(baseDir, { recursive: true });
-  }
-  const extension = path.extname(imageUrl.originalname);
-  const filePath = `${filePathWithOutExtension}${extension}`;
-  const realBuffer = Buffer.from(imageUrl.buffer.data);
-  fs.writeFileSync(filePath, realBuffer);
-};
+// type taskT = {
+//   type: string;
+//   payload: {
+//     modelId: string;
+//     [key: string]: any;
+//   };
+//   callbackUrl: string;
+// };
 
-async function zipFolder(
-  sourceFolder: string,
-  outPath: string
-): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(outPath);
-    const archive = archiver("zip", { zlib: { level: 9 } });
+// const downloadImages = async (
+//   imageUrl: imageT,
+//   ImagePath: string,
+//   modelId: string
+// ) => {
+//   const baseDir = path.join(__dirname, "temp", modelId);
+//   const filePathWithOutExtension = path.join(baseDir, ImagePath);
 
-    output.on("close", () => resolve(outPath));
-    archive.on("error", (err) => reject(err));
+//   if (!fs.existsSync(baseDir)) {
+//     fs.mkdirSync(baseDir, { recursive: true });
+//   }
+//   const extension = path.extname(imageUrl.originalname);
+//   const filePath = `${filePathWithOutExtension}${extension}`;
+//   const realBuffer = Buffer.from(imageUrl.buffer.data);
+//   fs.writeFileSync(filePath, realBuffer);
+// };
 
-    archive.pipe(output);
-    archive.directory(sourceFolder, false);
-    archive.finalize();
-  });
-}
+// async function zipFolder(
+//   sourceFolder: string,
+//   outPath: string
+// ): Promise<string> {
+//   return new Promise((resolve, reject) => {
+//     const output = fs.createWriteStream(outPath);
+//     const archive = archiver("zip", { zlib: { level: 9 } });
 
-async function uploadZipToCloudinary(filePath: string): Promise<any> {
-  const byteArrayBuffer = fs.readFileSync(filePath);
-  const uploadResult = await new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream({ folder: "imggen", resource_type: "raw" },
-        (error, uploadResult) => {if (error) {
-            console.log("cloudinary error : ", error);
-            resolve(null);
-          }
-          return resolve(uploadResult);
-        }
-      )
-      .end(byteArrayBuffer);
-    // cloudinary.uploader.upload(filePath,{
-    //     folder: "imggen",
-    //     resource_type: "auto",
-    //   },
-    //   (error, uploadResult) => {
-    //     if (error) {
-    //       console.log("cloudinary error : ", error);
-    //       resolve(null);
-    //     }
-    //     return resolve(uploadResult);
-    //   }
-    // );
-  });
-  return uploadResult;
-}
+//     output.on("close", () => resolve(outPath));
+//     archive.on("error", (err) => reject(err));
 
-async function startWorker() {
-  console.log("🚀 Worker is running...");
+//     archive.pipe(output);
+//     archive.directory(sourceFolder, false);
+//     archive.finalize();
+//   });
+// }
 
-  while (true) {
-    const result = await redisClient.blpop("trainModel", 0);
-    const task = JSON.parse(result?.[1] ?? "{}");
-    await processTask(task);
-  }
-}
+// async function uploadZipToCloudinary(filePath: string): Promise<any> {
+//   const byteArrayBuffer = fs.readFileSync(filePath);
+//   const uploadResult = await new Promise((resolve, reject) => {
+//     cloudinary.uploader
+//       .upload_stream(
+//         { folder: "imggen", resource_type: "raw" },
+//         (error, uploadResult) => {
+//           if (error) {
+//             console.log("cloudinary error : ", error);
+//             resolve(null);
+//           }
+//           return resolve(uploadResult);
+//         }
+//       )
+//       .end(byteArrayBuffer);
+//     // cloudinary.uploader.upload(filePath,{
+//     //     folder: "imggen",
+//     //     resource_type: "auto",
+//     //   },
+//     //   (error, uploadResult) => {
+//     //     if (error) {
+//     //       console.log("cloudinary error : ", error);
+//     //       resolve(null);
+//     //     }
+//     //     return resolve(uploadResult);
+//     //   }
+//     // );
+//   });
+//   return uploadResult;
+// }
 
-async function processTask(task: any) {
-  console.log(`⚙️ Processing task ${task.type}`);
-  (task.payload.images as imageT[]).forEach(async (url, index) => {
-    const path = `image_${index + 1}`;
-    downloadImages(url, path, task.payload.modelId);
-  });
+// async function modelTrainingWorker() {
+//   console.log("🚀 Worker is running...");
 
-  const dirPath = `${__dirname}/temp/${task.payload.modelId}`;
+//   while (true) {
+//     const result = await redisClient1.blpop("trainModel", 0);
+//     const task = JSON.parse(result?.[1] ?? "{}");
+//     await processTask(task);
+//   }
+// }
 
-  const zipDirPath = await zipFolder(dirPath, `${dirPath}.zip`);
-  console.log("✅ Zipped to:", zipDirPath);
+// async function processTask(task: taskT) {
+//   console.log(`⚙️ Processing task ${task.type}`);
+//   (task.payload.images as imageT[]).forEach(async (url, index) => {
+//     const path = `image_${index + 1}`;
+//     downloadImages(url, path, task.payload.modelId);
+//   });
 
-  const uploadResult = await uploadZipToCloudinary(zipDirPath);
+//   const dirPath = `${__dirname}/temp/${task.payload.modelId}`;
 
-  if (uploadResult) {
-    fs.unlinkSync(zipDirPath);
-    fs.rmSync(dirPath, { recursive: true, force: true });
-    const req = await fetch(task.callbackUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: "success",
-        modelId: task.payload.modelId,
-        url: uploadResult.secure_url,
-      }),
-    });
-  } else {
-    const req = await fetch(task.callbackUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "failed", modelId: task.payload.modelId }),
-    });
-  }
-  // const req = await fetch(task.callbackUrl, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({
-  //     status: "success",
-  //     modelId: task.payload.modelId,
-  //   }),
-  // });
-  console.log("Done");
-}
+//   const zipDirPath = await zipFolder(dirPath, `${dirPath}.zip`);
+//   console.log("✅ Zipped to:", zipDirPath);
 
-startWorker();
+//   const uploadResult = await uploadZipToCloudinary(zipDirPath);
+
+//   if (uploadResult) {
+//     fs.unlinkSync(zipDirPath);
+//     fs.rmSync(dirPath, { recursive: true, force: true });
+//     const req = await fetch(task.callbackUrl, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         status: "success",
+//         modelId: task.payload.modelId,
+//         url: uploadResult.secure_url,
+//       }),
+//     });
+//   } else {
+//     const req = await fetch(task.callbackUrl, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ status: "failed", modelId: task.payload.modelId }),
+//     });
+//   }
+//   // const req = await fetch(task.callbackUrl, {
+//   //   method: "POST",
+//   //   headers: { "Content-Type": "application/json" },
+//   //   body: JSON.stringify({
+//   //     status: "success",
+//   //     modelId: task.payload.modelId,
+//   //   }),
+//   // });
+//   console.log("Done");
+// }
+
+// async function imageGenerationWorker() {
+//   console.log("🚀 Image generation Worker is running...");
+//   while (true) {
+    
+//     console.log("Runs..");
+
+//     const res = await redisClient2.blpop("imageGeneration", 0);
+//     const task = JSON.parse(res?.[1] ?? "{}");
+//     await processImageGenerationTask(task);
+//   }
+// }
+// async function processImageGenerationTask(task: taskT) {
+//   try{
+//     console.log("waiting for 5 sec...");
+//     await new Promise(resolve => setTimeout(resolve, 5000)); //10 sec wait
+
+//     //TODO: api call to AI image generation service -- 💸as paid for now💸 
+//     const res = await fetch(task.callbackUrl,{
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ status: "success", generatedImageId: task.payload.generatedImageId }),
+//     });
+//     console.log("Image processed!")
+//   }catch(err){
+//  const res = await fetch(task.callbackUrl,{
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ status: "failed", generatedImageId: task.payload.generatedImageId }),
+//     });
+//   }
+// }
+
+modelTrainWorker();
+imageGenWorker();

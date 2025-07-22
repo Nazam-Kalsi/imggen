@@ -3,8 +3,9 @@ import { ApiRes } from "../utils/ApiRes";
 import { handler } from "../utils/handler";
 import { imageGeneration, trainModel } from "commontypes/types";
 import { prismaClient } from "db";
-import { redisClient } from "redis-client";
+import { createRedisClient } from "redis-client";
 
+const redisClient = createRedisClient();
 export const trainAiModel = handler(async (req, res, next) => {
     const { name, type, ethinicity, eyeColor, bald } = req.body;
     const images = req.files as Express.Multer.File[];
