@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "exports":{
-    "./types":"./types.ts"
+    "./types":"./types.ts",
+    "./inferTypes":"./inferTypes.ts"
   },
   "scripts": {
     "dev": "bun --watch --turbopack index.ts"

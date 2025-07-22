@@ -1,46 +1,70 @@
-import React from 'react'
+import React, { useState } from 'react';
 import {
-  Form,
-  FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
-} from "@components/components/ui/form";
-import Input from "@components/components/customComponents/input";
+} from '@components/components/ui/form';
+import { Button } from '../ui/button';
+import { EyeIcon, EyeOff } from 'lucide-react';
+
 type Props = {
-    form:any,
-    name:string,
-    label?:string,
-    type?:string,
-    placeHolder:string,
-    className?:string,
+  form: any;
+  name: string;
+  label?: string;
+  type?: string;
+  placeHolder: string;
+  className?: string;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'form' | 'name' | 'type' | 'placeholder' | 'className'>;
 
-}
+export function FormInput({
+  form,
+  name,
+  label,
+  type = 'text',
+  placeHolder,
+  className = '',
+  ...rest
+} : Props ) {
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-export function FormInput({form,name,label,type='text',placeHolder,className}: Props) {
-  return (    
+  // Determine the input type dynamically
+  const inputType = type === 'password' && passwordVisible ? 'text' : type;
+
+  return (
     <FormField
-                control={form.control}
-                name={name}
-                render={({ field }) => (
-                  <FormItem className='relative mb-6'>
-                    <FormLabel>{label}</FormLabel>
-                    <FormControl>
-                      {/* <Input {...field} /> */}
-                       <input                        
-                        type={type}          
-                        placeholder={placeHolder}
-                        className={`${className} w-full focus:outline focus:outline-violet-700  border p-2 py-1 rounded-md`}
-                        {...field}
-                        />
-                    </FormControl>
-                    <FormMessage className="absolute -bottom-5"/>
-                  </FormItem>
-                )}
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="relative mb-6">
+          {label && <FormLabel>{label}</FormLabel>}
+          <FormControl>
+            <div className="w-full relative">
+              <input
+                {...field}
+                type={inputType}
+                placeholder={placeHolder}
+                {...rest}
+                className={`w-full border p-2 py-1 rounded-2xl pr-10 focus:outline focus:outline-violet-700 ${className}`}
               />
-  )
+              {type === 'password' && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setPasswordVisible((prev) => !prev)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 h-auto w-auto"
+                >
+                  {passwordVisible ? <EyeOff size={18} /> : <EyeIcon size={18} />}
+                </Button>
+              )}
+            </div>
+          </FormControl>
+          <FormMessage className="absolute -bottom-5" />
+        </FormItem>
+      )}
+    />
+  );
 }
 
-export default FormInput
+export default FormInput;

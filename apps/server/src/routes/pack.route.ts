@@ -4,7 +4,7 @@ import { authMid } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.route('/get-packs').get(authMid,getPacks);
+router.route('/get-packs').get(getPacks);
 router.route('/create-pack').post(authMid,createPack);
 
 export default router;

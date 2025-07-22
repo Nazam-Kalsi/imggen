@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,6 +21,8 @@ import {
   InputOTPSlot,
 } from "@components/components/ui/input-otp";
 import { useSignUp } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import Loading from "@components/components/customComponents/loading";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -32,7 +34,8 @@ type Props = {};
 
 function Page({}: Props) {
   const { signUp, isLoaded, setActive } = useSignUp();
-
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema as any),
     defaultValues: {
@@ -46,6 +49,7 @@ function Page({}: Props) {
         toast.error("Sign up service is not loaded");
         return;
       }
+      setLoading(true);
       const otp = await signUp.prepareEmailAddressVerification({
         strategy: "email_code",
       });
@@ -53,12 +57,16 @@ function Page({}: Props) {
     } catch (error) {
       toast.error("error while sending email, Try again!");
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if (!isLoaded) return;
 
     try {
+      setLoading(true);
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: data.pin,
       });
@@ -69,12 +77,20 @@ function Page({}: Props) {
       }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
+        toast.success("OTP verified successfully!");
+        router.push('/')
+        
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+    } finally{
+      setLoading(false);
     }
   }
   return (
+    <>
+     {loading&& <Loading/>}
+
     <div className="flex flex-col justify-center items-center min-h-screen w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
@@ -110,6 +126,7 @@ function Page({}: Props) {
         </form>
       </Form>
     </div>
+    </>
   );
 }
 

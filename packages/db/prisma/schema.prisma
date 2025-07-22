@@ -11,13 +11,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
   //postgresql://test:test@localhost:5432/myDB?schema=public"
 }
 
 model User {
   id        String        @unique @default(uuid())
   userName  String
+  email     String        @unique
+  avatarUrl String?       @default("https://picsum.photos/200")
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   prompts   UserPrompts[]
@@ -28,22 +30,24 @@ model UserPrompts {
   id        String   @unique @default(uuid())
   prompt    String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Pack {
-  id       String        @unique @default(uuid())
-  packName String
-  prompts  PackPrompts[]
+  id          String        @unique @default(uuid())
+  packName    String        @unique()
+  description String        @default("")
+  imageUrl    String?       @default("https://picsum.photos/200")
+  prompts     PackPrompts[]
 }
 
 model PackPrompts {
   id     String @unique @default(uuid())
   prompt String
   packId String
-  pack   Pack   @relation(fields: [packId], references: [id])
+  pack   Pack   @relation(fields: [packId], references: [id], onDelete: Cascade)
 }
 
 model Models {
@@ -54,12 +58,12 @@ model Models {
   eyeColor       eyeColor
   bald           Boolean
   status         status           @default(pending)
-  zipUrl         String?            @default("")
+  zipUrl         String?          @default("")
   // images      String[]        // we gonna have new table which contain training images
   trainingImages TrainingImages[]
   outputImages   OutputImages[]
   userId         String
-  user           User          @relation(fields: [userId], references: [id])
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -68,20 +72,21 @@ model TrainingImages {
   id        String   @unique @default(uuid())
   imagesUrl String[]
   modelId   String
-  model     Models   @relation(fields: [modelId], references: [id])
+  model     Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model OutputImages {
-  id        String   @unique @default(uuid())
-  imageUrl  String   @default("https://picsum.photos/200")
-  prompt    String
-  modelId   String
-  userId    String
-  model     Models   @relation(fields: [modelId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                      String   @unique @default(uuid())
+  imageUrl                String?  
+  prompt                  String
+  modelId                 String
+  userId                  String
+  isGeneratedSuccessfully Boolean  @default(false)
+  model                   Models   @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 }
 
 enum eyeColor {

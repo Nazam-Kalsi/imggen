@@ -1,9 +1,10 @@
-import {workerResponse} from "../controllers/worker.controller"
+import {trainModelResult,imageGenerationResult} from "../controllers/worker.controller"
 import { Router } from "express"
 
 const router = Router();
 
 //need to apply auth
-router.route('/train-model-result').post(workerResponse);
+router.route('/train-model-result').post(trainModelResult);
+router.route('/generate-image-result').post(imageGenerationResult);
 
 export default router;

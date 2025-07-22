@@ -25,49 +25,79 @@ import {
 
 import { z } from "zod";
 import Input from "@components/components/customComponents/input";
-import {model, trainModel} from "commontypes/types"
+import {model,trainModel} from "commontypes/types"
+
 import { UploadFile } from "@components/components/customComponents/fileUpload";
 import { FormInput } from "@components/components/customComponents";
 import FormSelect from "@components/components/customComponents/formSelect";
+import { apiReq } from "@utils/apiReq";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "app/store/store";
+import { useAuth } from "@clerk/nextjs";
+import { logedIn } from "app/store/user.slice"; 
+import { toast } from "sonner";
+import Loading from "@components/components/customComponents/loading";
+import {modelTypes} from "commontypes/inferTypes";
 
 export default function Page() {
-const form = useForm<FieldValues>({
-  // resolver: zodResolver(trainModel as any),
+  const dispatch = useAppDispatch();
+  const [loading, setLoading ]= useState<boolean>(false);
+  const { getToken } = useAuth();
+const form = useForm<modelTypes>({
+  resolver: zodResolver(trainModel as any),
   defaultValues:{
     name: '',
-    type:'',
-    ethinicity:'',
-    eyeColor:'',
-    bald:'',
+    type:undefined,
+    ethinicity:undefined,
+    eyeColor:undefined,
+    bald:undefined,
     images:[]
   }
 })
+useEffect(() => {
+    (async () => {
+      let token = await getToken();
+      if (!token) {token = ""};
+      const res = await apiReq('/auth/get-current-user', 'GET', token);
+      if (!res.success) return;
+      dispatch(logedIn(res.res.data));
+    })();
+  }, []);
 
-  function onSubmit(values: z.infer<typeof trainModel>) {
-    console.log(values);
+ async  function onSubmit(values: modelTypes) {
+   setLoading(true);
+   const token =await getToken();
+    const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("type", values.type);
+      formData.append("ethinicity", values.ethinicity);
+      formData.append("eyeColor", values.eyeColor);
+      formData.append("bald", values.bald);
+        (values.images as File[])
+          .filter((file) => file instanceof File)
+          .forEach((file) => {
+            formData.append('images', file);
+          });
+
+    const res = await apiReq('/model/train-model', 'POST', (token as string), formData);
+    console.log("res: ", res);
+    if (!res.success){
+      setLoading(false);
+      return;
+  }
+  toast.success("Model trained successfully");
+  setLoading(false);
   }
 
   return (
+    <div className='relative w-full'>
+      {loading && <Loading/>}
+      <img
+        src="./grad2.jpg"
+        alt="Image"
+        className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.1] hidden dark:block  dark:grayscale z-[-9]"
+      />
     <div className="flex justify-center items-center min-h-screen w-full p-6">
-      {/* <Card className="w-full max-w-1/2">
-        <CardHeader>
-          <CardTitle>Train Model</CardTitle>
-          <CardDescription>
-            Fill in the details and hit train
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Train
-          </Button>
-        </CardFooter>
-            </form>
-          </Form>
-        </CardContent>
-      </Card> */}
       <Card className="w-full max-w-1/2">
         <CardHeader>
           <CardTitle>Train Model</CardTitle>
@@ -87,8 +117,8 @@ const form = useForm<FieldValues>({
               control={form.control}
               name='images'
               render={({ field }) => (
-                <FormItem className='relative mb-6'>
-                  <FormLabel>Images</FormLabel>
+                <FormItem className='flex flex-col justify-center items-center relative mb-6'>
+                  <FormLabel className='self-start'>Images</FormLabel>
                   <FormControl>
                   <UploadFile onChange={field.onChange} value={field.value}  />                     
                   </FormControl>
@@ -105,6 +135,7 @@ const form = useForm<FieldValues>({
           </Form>
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 }
