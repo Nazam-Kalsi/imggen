@@ -76,7 +76,7 @@ export default function Page() {
     if (!polling) return;
     let isCancelled = false;
     ;( async()=>{
-    if (!isCancelled) {
+    while (!isCancelled) {
       await new Promise((resolve) => setTimeout(resolve, 4000));     
         const token = await getToken();
         const res = await apiReq("/model/get-models", "GET", token as string);
@@ -94,6 +94,7 @@ export default function Page() {
             }
             return prev.concat(x);
           });
+          break;
         }
     }})();
      return () => {
