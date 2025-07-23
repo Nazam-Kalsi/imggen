@@ -60,6 +60,8 @@ export const getModelById = handler(async(req,res,next)=>{
   const model = await prismaClient.models.findUnique({
     where: {
       id: modelID,
+      status: 'success',
+      userId: req.user.id,
     },
   });
 
