@@ -10,13 +10,12 @@ import {
   CardTitle,
 } from "@components/components/ui/card";
 
-import { useForm, FieldValues } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,7 +23,6 @@ import {
 } from "@components/components/ui/form";
 
 import { z } from "zod";
-import Input from "@components/components/customComponents/input";
 import {model,trainModel} from "commontypes/types"
 
 import { UploadFile } from "@components/components/customComponents/fileUpload";
@@ -38,6 +36,7 @@ import { logedIn } from "app/store/user.slice";
 import { toast } from "sonner";
 import Loading from "@components/components/customComponents/loading";
 import {modelTypes} from "commontypes/inferTypes";
+import Image from "next/image";
 
 export default function Page() {
   const dispatch = useAppDispatch();
@@ -92,16 +91,18 @@ useEffect(() => {
   return (
     <div className='relative w-full'>
       {loading && <Loading/>}
-      <img
-        src="./grad2.jpg"
-        alt="Image"
-        className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.1] hidden dark:block  dark:grayscale z-[-9]"
+      <Image
+       src="/grad6.jpeg"
+        alt="svg"
+        width={500}
+        height={500}
+        className="fixed inset-0 h-full w-full object-cover blur-lg hidden dark:block z-[-9] opacity-30"
       />
     <div className="flex justify-center items-center min-h-screen w-full p-6">
-      <Card className="w-full max-w-1/2">
+      <Card className="w-full max-w-1/2 dark:bg-zinc-900/50 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Train Model</CardTitle>
-          <CardDescription>
+          <CardDescription className="">
             Fill in the details and hit train
           </CardDescription>
         </CardHeader>

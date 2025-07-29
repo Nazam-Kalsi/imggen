@@ -15,14 +15,13 @@ const dispatch = useAppDispatch();
 const router = useRouter();
 
 const isUser = useAppSelector((state) => state.authSlice.user);
-console.log(isUser);
 const btns = [
   {
-    name: "Image generation",
+    name: "Image Generation",
     href: "/image-generation",
   },
   {
-    name: "Train model",
+    name: "Train Model",
     href: "/train",
   },
   {
@@ -75,7 +74,7 @@ const btns = [
         </Link>
 
 
-        <div className="flex items-center justify-between py-2 px-4 rounded-lg">
+        <div className="flex items-center justify-between py-2 px-4 gap-2 rounded-lg">
           {isUser ? (
             <>
             {
@@ -85,9 +84,9 @@ const btns = [
                 </Link>
               ))
             }
-            <Button variant="ghost" onClick={s}>
-              Sign out
-            </Button>
+            <button  className="hover:bg-red-500/40 p-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50  outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" onClick={s}>
+              Sign-out
+            </button>
             </>
           ) : (
             <Link href="/sign-in">

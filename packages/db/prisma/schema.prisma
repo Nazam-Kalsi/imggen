@@ -80,7 +80,7 @@ model TrainingImages {
 model OutputImages {
   id                      String   @unique @default(uuid())
   imageUrl                String?  
-  prompt                  String
+  prompt                  String?
   modelId                 String
   userId                  String
   isGeneratedSuccessfully Boolean  @default(false)

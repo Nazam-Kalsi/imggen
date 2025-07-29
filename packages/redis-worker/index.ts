@@ -1,4 +1,5 @@
 import imageGenWorker from './workers/imageGenerationWorker'
+import { imageGenFromPackWorker } from './workers/imageGenFromPackWorker';
 import modelTrainWorker from './workers/modelTrainWorker'
 // import { createRedisClient } from "redis-client";
 // import { v2 as cloudinary } from "cloudinary";
@@ -185,3 +186,4 @@ import modelTrainWorker from './workers/modelTrainWorker'
 
 modelTrainWorker();
 imageGenWorker();
+imageGenFromPackWorker();
