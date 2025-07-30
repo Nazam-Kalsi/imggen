@@ -30,7 +30,7 @@ export const getImages = handler(async (req, res, next) => {
     .status(200)
     .json(
       ApiRes(200, "Success", {
-        data: { images, page, pageSize, totalImages, totalPages },
+        data: { images, page, pageSize, totalImages, totalPages,currentCount:images.length },
       })
     );
 });
@@ -47,7 +47,6 @@ export const getImagesById = handler(async (req, res, next) => {
 
   return res.status(200).json(ApiRes(200, "Success", { image }));  
 });
-
 
 export const generateAiImagesFromModel = handler(async (req, res, next) => {
   const data = imageGeneration.safeParse(req.body);
@@ -75,9 +74,7 @@ export const generateAiImagesFromModel = handler(async (req, res, next) => {
         callbackUrl: `${process.env.WEBHOOK_URL}/api/webhook/generate-image-result`
       };
   const redisQueue = await redisClient.rpush("imageGeneration", JSON.stringify(task));
-    console.log("redisQueue: ",redisQueue);
 
-  console.log("redis done");
 
   return res
   .status(200)
@@ -96,22 +93,35 @@ export const generateAiImagesFromPack = handler(async (req, res, next) => {
       prompt: true,
     },
   });
-
   if (!prompts) return next(new ApiErr(404, "Prompts not found."));
 
+  //simulate image generation
   const generatedImage = await prismaClient.outputImages.createManyAndReturn({
     data: prompts.map((x: { prompt: string }) => {
       return {
-        modelId: data.data.modelId,
-        prompt: x.prompt,
-        userId:  req.user.id,
-        imageUrl: "https://picsum.photos/200",
+        modelId: data.data.modelId,       
+        userId:  req.user.id,       
       };
     }),
   });
-  return res
-    .status(200)
-    .json(
-      ApiRes(200, "Success", { data: generatedImage.map((x: any) => x.id) })
-    );
+
+  const task = {
+    type: "imageGenerationFromPack",
+    payload: {
+      dbIds: generatedImage.map((x: any) => x.id),
+      prompts: prompts.map((x: { prompt: string }) => x.prompt),
+      modelId: data.data.modelId,
+      userId: req.user.id,
+    },
+    callbackUrl: `${process.env.WEBHOOK_URL}/api/webhook/generate-image-from-pack-result`
+  };
+
+  await redisClient.rpush("imageGenerationFromPack", JSON.stringify(task));
+
+  return res.status(200).json(ApiRes(200, "Success"));
+  // return res
+  //   .status(200)
+  //   .json(
+  //     ApiRes(200, "Success", { data: generatedImage.map((x: any) => x) })
+  //   );
 });

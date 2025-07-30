@@ -43,6 +43,7 @@ export const getPacks = handler(async (req, res, next) => {
     }),
     prismaClient.pack.count(),
   ]);
+  console.log(packs);
 
   const totalPages = Math.ceil(total / pageSize);
   return res
