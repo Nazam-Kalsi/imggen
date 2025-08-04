@@ -26,7 +26,8 @@ export const imageGenerationResult = handler(async (req, res, next) => {
       id:req.body.generatedImageId
     },
     data:{
-      isGeneratedSuccessfully:true
+      isGeneratedSuccessfully:true,
+      imageUrl:req.body.imageUrl
     }
   });
   return res.status(200).json("done👍");
