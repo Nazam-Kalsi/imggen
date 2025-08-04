@@ -21,7 +21,7 @@ async function processImageGenerationTask(task: taskT) {
     const res = await fetch(task.callbackUrl,{
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "success", generatedImageId: task.payload.generatedImageId }),
+      body: JSON.stringify({ status: "success", generatedImageId: task.payload.generatedImageId,imageUrl : "https://picsum.photos/200" }),
     });
     console.log("Image processed!")
   }catch(err){
