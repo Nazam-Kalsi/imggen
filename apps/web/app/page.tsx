@@ -1,9 +1,17 @@
+"use client";
+import { useAuth } from "@clerk/nextjs";
 import Noise from "@components/components/customComponents/noise";
 import { AnimatedGradientText } from "@components/components/ui/animated-gradient-text";
 import { Button } from "@components/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router =useRouter();
+  const {isSignedIn} = useAuth();
+  if(isSignedIn){
+    router.push('/image-generation')
+  }
   return (
     <div className='w-full'>
     <img

@@ -52,7 +52,7 @@ function Page({}: Props) {
         await setActive({ session: result.createdSessionId });
         console.log("logedIn: ", result);
         dispatch(logedIn({ id: result.id as string }));
-        router.push("/train");
+        router.push("/image-generation");
       } else {
         /*Investigate why the sign-in hasn't completed */
         console.log(result);

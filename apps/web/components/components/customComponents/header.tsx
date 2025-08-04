@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import ThemeToggler from './themeToggler'
-import { useClerk } from '@clerk/nextjs'
+import { useAuth, useClerk } from '@clerk/nextjs'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -13,8 +13,9 @@ import { logedOut } from 'app/store/user.slice'
 function Header() {
 const dispatch = useAppDispatch();
 const router = useRouter();
-
+const  {isSignedIn} =useAuth();
 const isUser = useAppSelector((state) => state.authSlice.user);
+console.log(isUser);
 const btns = [
   {
     name: "Image Generation",
@@ -75,7 +76,7 @@ const btns = [
 
 
         <div className="flex items-center justify-between py-2 px-4 gap-2 rounded-lg">
-          {isUser ? (
+          {isSignedIn ? (
             <>
             {
               btns.map((btn, index) => (

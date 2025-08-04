@@ -17,7 +17,11 @@ function AppInitializer() {
       let token = await getToken();
       if (!token) {return;};
       const res = await apiReq('/auth/get-current-user', 'GET', token);
-      if (!res.success) return;
+      if (!res.success){
+         return;
+        }
+      console.log(res.res.data);
+      
       dispatch(logedIn(res.res.data));
     })();
   }, []);
