@@ -122,7 +122,7 @@ function Page() {
             name: model.name,
           };
         });
-        return modelsData;
+        return [{id:"qwerty",name:"Random"},...modelsData];
       });
     })();
   }, []);

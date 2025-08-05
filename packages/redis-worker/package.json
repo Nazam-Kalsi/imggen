@@ -11,5 +11,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@huggingface/inference": "^4.6.1"
   }
 }

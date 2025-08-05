@@ -41,7 +41,7 @@ try{
  const res = await fetch(task.callbackUrl,{
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "failed", data:"" }),
+      body: JSON.stringify({ status: "failed", data:task.payload.dbIds }),
     });
   }
 }

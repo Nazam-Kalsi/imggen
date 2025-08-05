@@ -143,6 +143,9 @@
     },
     "packages/redis-worker": {
       "name": "redis-worker",
+      "dependencies": {
+        "@huggingface/inference": "^4.6.1",
+      },
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -277,6 +280,12 @@
     "@formkit/auto-animate": ["@formkit/auto-animate@0.8.2", "", {}, "sha512-SwPWfeRa5veb1hOIBMdzI+73te5puUBHmqqaF1Bu7FjvxlYSz/kJcZKSa9Cg60zL0uRNeJL2SbRxV6Jp6Q1nFQ=="],
 
     "@hookform/resolvers": ["@hookform/resolvers@5.1.1", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-J/NVING3LMAEvexJkyTLjruSm7aOFx7QX21pzkiJfMoNG0wl5aFEjLTl7ay7IQb9EWY6AkrBy7tHL2Alijpdcg=="],
+
+    "@huggingface/inference": ["@huggingface/inference@4.6.1", "", { "dependencies": { "@huggingface/jinja": "^0.5.1", "@huggingface/tasks": "^0.19.33" } }, "sha512-GjEYAoW88rZKthi4OTP+Lq0yi82MywVKEKm2zLDR6BePCinpDyhTPracDPBXSl4guxenYKcoKmitFjqS/zk/sg=="],
+
+    "@huggingface/jinja": ["@huggingface/jinja@0.5.1", "", {}, "sha512-yUZLld4lrM9iFxHCwFQ7D1HW2MWMwSbeB7WzWqFYDWK+rEb+WldkLdAJxUPOmgICMHZLzZGVcVjFh3w/YGubng=="],
+
+    "@huggingface/tasks": ["@huggingface/tasks@0.19.34", "", {}, "sha512-dIl3jyeddCEFJeogJOcbhfIq1tlo3N9K4EAxG/MfkGL0l7hI2kfs91Ut+1h6i09TQM8A9XM91NV7Jz6PgfWE7Q=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 
@@ -1916,7 +1925,7 @@
 
     "redis-client/@types/bun": ["@types/bun@1.2.18", "", { "dependencies": { "bun-types": "1.2.18" } }, "sha512-Xf6RaWVheyemaThV0kUfaAUvCNokFr+bH8Jxp+tTZfx7dAPA8z9ePnP9S9+Vspzuxxx9JRAXhnyccRj3GyCMdQ=="],
 
-    "redis-worker/@types/bun": ["@types/bun@1.2.18", "", { "dependencies": { "bun-types": "1.2.18" } }, "sha512-Xf6RaWVheyemaThV0kUfaAUvCNokFr+bH8Jxp+tTZfx7dAPA8z9ePnP9S9+Vspzuxxx9JRAXhnyccRj3GyCMdQ=="],
+    "redis-worker/@types/bun": ["@types/bun@1.2.19", "", { "dependencies": { "bun-types": "1.2.19" } }, "sha512-d9ZCmrH3CJ2uYKXQIUuZ/pUnTqIvLDS0SK7pFmbx8ma+ziH/FRMoAq5bYpRG7y+w1gl+HgyNZbtqgMq4W4e2Lg=="],
 
     "restore-cursor/onetime": ["onetime@7.0.0", "", { "dependencies": { "mimic-function": "^5.0.0" } }, "sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ=="],
 
@@ -2026,7 +2035,7 @@
 
     "redis-client/@types/bun/bun-types": ["bun-types@1.2.18", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-04+Eha5NP7Z0A9YgDAzMk5PHR16ZuLVa83b26kH5+cp1qZW4F6FmAURngE7INf4tKOvCE69vYvDEwoNl1tGiWw=="],
 
-    "redis-worker/@types/bun/bun-types": ["bun-types@1.2.18", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-04+Eha5NP7Z0A9YgDAzMk5PHR16ZuLVa83b26kH5+cp1qZW4F6FmAURngE7INf4tKOvCE69vYvDEwoNl1tGiWw=="],
+    "redis-worker/@types/bun/bun-types": ["bun-types@1.2.19", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-uAOTaZSPuYsWIXRpj7o56Let0g/wjihKCkeRqUBhlLVM/Bt+Fj9xTo+LhC1OV1XDaGkz4hNC80et5xgy+9KTHQ=="],
 
     "server/@types/bun/bun-types": ["bun-types@1.2.19", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-uAOTaZSPuYsWIXRpj7o56Let0g/wjihKCkeRqUBhlLVM/Bt+Fj9xTo+LhC1OV1XDaGkz4hNC80et5xgy+9KTHQ=="],
 
