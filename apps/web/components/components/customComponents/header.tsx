@@ -7,7 +7,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from 'app/store/store'
 import { logedOut } from 'app/store/user.slice'
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
+gsap.registerPlugin(useGSAP);
 
 
 function Header() {
@@ -15,6 +19,9 @@ const dispatch = useAppDispatch();
 const router = useRouter();
 const  {isSignedIn} =useAuth();
 const isUser = useAppSelector((state) => state.authSlice.user);
+const headerRef = useRef(null);
+const lastScrollY = useRef(0);
+const isHidden = useRef(false);
 console.log(isUser);
 const btns = [
   {
@@ -34,47 +41,75 @@ const btns = [
     href: `/home/${isUser?.data?.id}`,
   },
 ];
-      const { signOut } = useClerk();
-      const s = async()=>{
-        const result = await signOut();
-        dispatch(logedOut());
-        router.push('/sign-in');     
-      }
 
-   const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+const { signOut } = useClerk();
+const s = async()=>{
+  const result = await signOut();
+  dispatch(logedOut());
+  router.push('/sign-in');     
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
+   useEffect(() => {
+    const header = headerRef.current;
+    gsap.set(header, {
+      y: -300,
+      scale: 1.5,
+      rotate: 15,
+      opacity: 0,
+      transformOrigin: 'center',
+    });
+
+    
+    gsap.to(header, {
+      y: 20,
+      scale: 1,
+      rotate: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power4.out',
+      delay: 0.1,
+    });
+
+      const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 60) {
-        // scrolling down
-        setShowHeader(false);
-      } else {
-        // scrolling up
-        setShowHeader(true);
+      console.log(currentScrollY);
+
+      if (currentScrollY > lastScrollY.current + 5) {
+        // Scrolling up → hide header
+        if (!isHidden.current) {
+          gsap.to(header, {
+            y: -100,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+          isHidden.current = true;
+        }
+      } else if (currentScrollY < lastScrollY.current - 5) {
+        // Scrolling down → show header
+        if (isHidden.current) {
+          gsap.to(header, {
+            y: 20,
+            duration: 0.2,
+            ease: 'power2.inOut',
+          });
+          isHidden.current = false;
+        }
       }
-      setLastScrollY(currentScrollY);
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
+  
+ 
   return (
-
     <div
-      className={`fixed top-0 left-0 right-0 z-50 border w-11/12 mx-auto rounded-lg transition-transform duration-300 ${
-        showHeader ? "translate-y-4" : "-translate-y-full"
-      }  border-b shadow  rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10`}
-    >
-      
+    ref={headerRef}
+    className={`fixed top-0 left-0 right-0 z-[9999] border w-11/12 mx-auto rounded-lg transition-transform duration-300 border-b shadow bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10`}>
       <div className="flex justify-between items-center p-2 w-full mx-auto rounded-md">
-        <Link href="/" className="py-2 px-4 rounded-lg">
-          Imggen
-        </Link>
-
-
+        <Link href="/" className="py-2 px-4 rounded-lg">Imggen</Link>
         <div className="flex items-center justify-between py-2 px-4 gap-2 rounded-lg">
           {isSignedIn ? (
             <>
@@ -95,12 +130,9 @@ const btns = [
             </Link>
           )}
           <ThemeToggler />
-        </div>
-        
+        </div>        
       </div>
-    </div>
-    
+    </div>    
   )
 }
-
 export default Header
