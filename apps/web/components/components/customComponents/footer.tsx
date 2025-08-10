@@ -5,7 +5,7 @@ type Props = {}
 
 function Footer({}: Props) {
   return (
-    <div className='relative'>
+    <div className='relative '>
         <TextHoverEffect text="IMGGEN" />
         <div className='flex w-full px-10 justify-end items-center absolute top-3/4'>
             <p>made with ❤️ </p>
